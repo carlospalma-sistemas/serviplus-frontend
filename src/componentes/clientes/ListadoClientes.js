@@ -1,19 +1,31 @@
+import { useState, useEffect } from "react";
 import Estados from "../../enums/Estados";
 import ClientesServicios from "../../servicios/ClientesServicios";
 
 const ListadoClientes = () => {
 
-    let estado = Estados.CARGANDO;
-    const listadoClientes = ClientesServicios.listarClientes();
-    console.log(listadoClientes);
-    if (listadoClientes.length > 0) {
-        estado = Estados.OK;
-    }
-    else {
-        estado = Estados.VACIO;
-    }
-    estado = Estados.CARGANDO;
-    
+    const [ listadoClientes, setListadoClientes ] = useState([]);
+    const [ estado, setEstado ] = useState(Estados.CARGANDO);
+
+    useEffect(() => {
+        const cargarDatos = async () => {
+            try {
+                const respuesta = await ClientesServicios.listarClientes();
+                console.log(respuesta);
+                if (respuesta.data.length > 0) {
+                    setListadoClientes(respuesta.data);
+                    setEstado(Estados.OK);
+                }
+                else {
+                    setEstado(Estados.VACIO);
+                }
+            } catch (error) {
+                setEstado(Estados.ERROR);
+            }
+        }
+        cargarDatos();
+    }, [])
+
     return (
         <div className="container">
             <h3 className="mt-3">Lista de clientes</h3>
@@ -27,11 +39,14 @@ const ListadoClientes = () => {
                     </tr>
                 </thead>
                 <tbody>
-                    {   estado == Estados.CARGANDO ? 
-                            (<div>Cargando...</div>) 
+                    {   estado === Estados.CARGANDO ? 
+                            (<tr><td>Cargando...</td></tr>) 
                         :
-                        estado == Estados.VACIO ? 
-                            (<div>No hay datos</div>) 
+                        estado === Estados.ERROR ? 
+                            (<tr><td>Error cargando datos. Intente más tarde</td></tr>) 
+                        :
+                        estado === Estados.VACIO ? 
+                            (<tr><td>No hay datos</td></tr>) 
                         : 
                         listadoClientes.map((cliente) => (
                             <tr>

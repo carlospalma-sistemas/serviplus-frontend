@@ -1,3 +1,5 @@
+import axios from "axios";
+
 const clientes = [
     {
         nombres: "Carlos A",
@@ -31,7 +33,7 @@ const clientes = [
 const ClientesServicios = {};
 
 ClientesServicios.listarClientes = () => {
-    return clientes;
+    return axios.get("http://localhost:8080/clientes");
 }
 
 export default ClientesServicios;
