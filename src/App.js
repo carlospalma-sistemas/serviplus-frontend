@@ -1,9 +1,9 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import ListadoAgentes from "./agentes/ListadoAgentes";
-import FormClientes from "./clientes/FormClientes";
-import ListadoClientes from "./clientes/ListadoClientes";
-import Bienvenida from "./general/Bienvenida";
-import Header from "./general/Header";
+import ListadoAgentes from "./componentes/agentes/ListadoAgentes";
+import FormClientes from "./componentes/clientes/FormClientes";
+import ListadoClientes from "./componentes/clientes/ListadoClientes";
+import Bienvenida from "./componentes/general/Bienvenida";
+import Header from "./componentes/general/Header";
 
 const App = () => {
   return (
