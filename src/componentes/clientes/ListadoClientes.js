@@ -7,25 +7,23 @@ const ListadoClientes = () => {
     const [ listadoClientes, setListadoClientes ] = useState([]);
     const [ estado, setEstado ] = useState(Estados.CARGANDO);
 
-    useEffect(() => {
-        const cargarDatos = async () => {
-            try {
-                const respuesta = await ClientesServicios.listarClientes();
-                console.log(respuesta);
-                if (respuesta.data.length > 0) {
-                    setListadoClientes(respuesta.data);
-                    setEstado(Estados.OK);
-                }
-                else {
-                    setEstado(Estados.VACIO);
-                }
-            } catch (error) {
-                setEstado(Estados.ERROR);
+    const cargarClientes = async () => {
+        try {
+            const respuesta = await ClientesServicios.listarClientes();
+            console.log(respuesta);
+            if (respuesta.length > 0) {
+                setListadoClientes(respuesta);
+                setEstado(Estados.OK);
             }
+            else {
+                setEstado(Estados.VACIO);
+            }
+        } catch (error) {
+            setEstado(Estados.ERROR);
         }
-        cargarDatos();
-    }, [])
-
+    }
+    cargarClientes();
+    
     return (
         <div className="container">
             <h3 className="mt-3">Lista de clientes</h3>
@@ -40,10 +38,14 @@ const ListadoClientes = () => {
                 </thead>
                 <tbody>
                     {   estado === Estados.CARGANDO ? 
-                            (<tr><td>Cargando...</td></tr>) 
+                            (<tr><td>
+                                <div class="spinner-border text-secondary" role="status">
+                                    <span class="sr-only"></span>
+                                </div>
+                            </td></tr>) 
                         :
                         estado === Estados.ERROR ? 
-                            (<tr><td>Error cargando datos. Intente más tarde</td></tr>) 
+                            (<tr><td>Ocurrió un error, intente más tarde</td></tr>) 
                         :
                         estado === Estados.VACIO ? 
                             (<tr><td>No hay datos</td></tr>) 

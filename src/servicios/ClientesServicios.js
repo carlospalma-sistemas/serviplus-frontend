@@ -33,7 +33,11 @@ const clientes = [
 const ClientesServicios = {};
 
 ClientesServicios.listarClientes = () => {
-    return axios.get("http://localhost:8080/clientes");
+    return new Promise((resolve, reject) => {
+        setTimeout(() => {
+            reject("Uy no, se despapayó");
+        }, 2000);
+    })
 }
 
 export default ClientesServicios;
