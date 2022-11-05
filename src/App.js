@@ -14,6 +14,7 @@ const App = () => {
           <Route path="/" element={<Bienvenida/>} exact></Route>
           <Route path="/clientes" element={<ListadoClientes/>} exact></Route>
           <Route path="/clientes/form" element={<FormClientes/>} exact></Route>
+          <Route path="/clientes/form/:id" element={<FormClientes/>} exact></Route>
           <Route path="/agentes" element={<ListadoAgentes/>} exact></Route>
         </Routes>
       </BrowserRouter>

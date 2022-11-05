@@ -1,4 +1,3 @@
-import { useState } from "react";
 import banner1 from "../../imgs/banner1.jpg";
 import banner2 from "../../imgs/banner2.jpg";
 import banner3 from "../../imgs/banner3.jpg";
@@ -14,7 +13,6 @@ const Bienvenida = () => {
             <div className="carousel-inner">
                 <div className="carousel-item active">
                     <img src={banner1} alt="banner1" width="100%" height="300"/>
-
                     <div className="container">
                         <div className="carousel-caption text-start">
                             <h1>Example headline.</h1>
@@ -24,8 +22,7 @@ const Bienvenida = () => {
                     </div>
                 </div>
                 <div className="carousel-item">
-                <img src={banner2} alt="banner2" width="100%" height="300"/>
-
+                    <img src={banner2} alt="banner2" width="100%" height="300"/>
                     <div className="container">
                         <div className="carousel-caption">
                             <h1>Another example headline.</h1>
@@ -36,7 +33,6 @@ const Bienvenida = () => {
                 </div>
                 <div className="carousel-item">
                     <img src={banner3} alt="banner3" width="100%" height="300"/>
-
                     <div className="container">
                         <div className="carousel-caption text-end">
                             <h1>One more for good measure.</h1>

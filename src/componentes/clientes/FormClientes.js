@@ -1,10 +1,11 @@
+import { useEffect } from "react";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import ClientesServicios from "../../servicios/ClientesServicios";
 
 const FormClientes = () => {
-
-    const navigateTo = useNavigate()
+    const { id } = useParams();
+    const navigateTo = useNavigate();
 
     const [ nombres, setNombres ] = useState("");
     const [ apellidos, setApellidos ] = useState("");
@@ -14,8 +15,8 @@ const FormClientes = () => {
     const [ correo, setCorreo ] = useState("");
     const [ passw, setPassw ] = useState("");
     const [ confirm, setConfirm ] = useState("");
-    const [ activo, setActivo ] = useState(false);
     const [ mensaje, setMensaje ] = useState("");
+    const [ titulo, setTitulo ] = useState("");
 
     const guardarCliente = async (event) => {
         event.preventDefault();
@@ -32,8 +33,14 @@ const FormClientes = () => {
                     passw: passw
                 }
                 console.log(cliente);
-                await ClientesServicios.guardarCliente(cliente);
-                navigateTo("/");
+                if (id == null) {
+                    await ClientesServicios.guardarCliente(cliente);
+                    navigateTo("/");
+                }
+                else {
+                    await ClientesServicios.modificarCliente(id, cliente);
+                    navigateTo("/clientes");
+                }
             } catch (error) {
                 setMensaje("Ocurrió un error");
             }
@@ -42,6 +49,44 @@ const FormClientes = () => {
             setMensaje("Las contraseñas no coinciden");
         }
     }
+
+    const cargarCliente = async () => {
+        try {
+            if (id != null) {
+                const respuesta = await ClientesServicios.buscarCliente(id);
+                if (respuesta.data != null) {
+                    console.log(respuesta.data);
+                    setNombres(respuesta.data.nombres);
+                    setApellidos(respuesta.data.apellidos);
+                    setDocumento(respuesta.data.documento);
+                    setDireccion(respuesta.data.direccion);
+                    setTelefono(respuesta.data.telefono);
+                    setCorreo(respuesta.data.correo);
+                    setPassw(respuesta.data.passw);
+                    setConfirm(respuesta.data.passw);
+                }
+                setTitulo("Edición");
+            }
+            else {
+                setTitulo("Registro");
+            }
+        } catch (error) {
+            console.log("Ocurrió un error");
+        }
+    }
+
+    const cancelar = () => {
+        if (id != null) {
+            navigateTo("/clientes");
+        }
+        else {
+            navigateTo("/");
+        }
+    }
+
+    useEffect(()=> {
+       cargarCliente();
+    }, [])
 
     const cambiarNombres = (event) => {
         setNombres(event.target.value);
@@ -75,16 +120,11 @@ const FormClientes = () => {
         setConfirm(event.target.value);
     }
 
-    const cambiarActivo = (event) => {
-        setActivo(event.target.checked);
-    }
-
-
     return (
         <div className="container mt-3">
             <div>Imagen</div>
             <div>
-                <h3>Registro de clientes</h3>
+                <h3>{titulo} de clientes</h3>
                 <form className="container" action="">
                     <div className="row">
                         <div className="col-3">
@@ -97,7 +137,7 @@ const FormClientes = () => {
                         </div>
                         <div className="col-3">
                             <label className="form-control-sm" htmlFor="documento">Ingrese documento *</label>
-                            <input className="form-control form-control-sm" type="number" onChange={cambiarDocumento} value={documento} name="documento" id="documento" required/>
+                            <input className="form-control form-control-sm" type="number" onChange={cambiarDocumento} readOnly = {id!=null ? true : false } value={documento} name="documento" id="documento" required/>
                         </div>
                         <div className="col-3">
                             <label className="form-control-sm" htmlFor="direccion">Ingrese dirección *</label>
@@ -113,22 +153,18 @@ const FormClientes = () => {
                             <label className="form-control-sm" htmlFor="correo">Email *</label>
                             <input className="form-control form-control-sm" type="email" onChange={cambiarCorreo} value={correo} name="correo" id="correo" required/>
                         </div>
-                        <div className="col-2">
+                        <div className="col-3">
                             <label className="form-control-sm" htmlFor="passw">Contraseña *</label>
                             <input className="form-control form-control-sm" type="password" onChange={cambiarPassw} value={passw} name="passw" id="passw" required/>
                         </div>
-                        <div className="col-2">
+                        <div className="col-3">
                             <label className="form-control-sm" htmlFor="confirm">Confirme contraseña *</label>
                             <input className="form-control form-control-sm" type="password" onChange={cambiarConfirm} value={confirm} name="confirm" id="confirm" required/>
-                        </div>
-                        <div className="col-2">
-                            <input type="checkbox" checked={activo} onChange={cambiarActivo} name="activo" id="activo" />
-                            <label htmlFor="activo">Activo</label>
                         </div>
                     </div>
                     <div className="mt-3">
                         <button onClick={guardarCliente} className="btn btn-primary me-2">Guardar</button>
-                        <a href="/" className="btn btn-secondary">Cancelar</a>
+                        <button onClick={cancelar} className="btn btn-secondary">Cancelar</button>
                         <div id="mensaje">{mensaje}</div>
                     </div>
                 </form>
